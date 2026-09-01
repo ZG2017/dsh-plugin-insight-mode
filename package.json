@@ -1,0 +1,30 @@
+{
+  "name": "@gz2016/dsh-plugin-insight-mode",
+  "description": "Master/worker deep-research architecture: the top-level agent clarifies your request, gets your approval on a task breakdown and operating budget, then dispatches independent parallel worker subagents until the report is done.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "ZG2017",
+  "homepage": "https://github.com/ZG2017/dsh-plugin-insight-mode#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZG2017/dsh-plugin-insight-mode.git"
+  },
+  "keywords": ["deepseek-harness", "dsh", "dsh-plugin", "research", "insight", "subagent", "master-worker"],
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-subagent": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-tools": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-session": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-llm": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-user-questions": "0.1.1-rc.2",
+    "@deepseek-ai/dsh-system-prompt": "0.1.1-rc.2",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  }
+}
