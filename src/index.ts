@@ -60,7 +60,18 @@ const routeSchema: z<ModelRoute> = z.object({
 
 export const Config: z<Config> = z.object({
   maxWorkerRetries: z.number().step(1).min(1).default(3),
-  workerModel: routeSchema,
+  // z.object(...) sets an implicit meta.default of {} at construction time
+  // (schemastery's own object/dict type factory), regardless of whether
+  // .default() is ever called - so routeSchema alone, unqualified, would
+  // still resolve an ABSENT workerModel to {} and then fail on routeSchema's
+  // own required provider/model fields, exactly the mount-time crash this
+  // field is meant to avoid on a deployment that never configures it.
+  // .default(undefined) overrides that implicit default back to nullable,
+  // which is what actually makes an absent workerModel resolve to
+  // undefined - confirmed live: this exact line was the fix for a real
+  // "missing required value (at workerModel.provider)" mount failure
+  // reproduced on a vanilla DSH install with no workerModel configured.
+  workerModel: routeSchema.default(undefined),
 })
 
 export function apply(ctx: Context, config: Config): void {
