@@ -45,7 +45,7 @@ A few research-oriented DSH plugins already exist - citation-integrity engines, 
 ## Install
 
 ```sh
-dsh plugin --profile web add @gz2016/dsh-plugin-insight-mode
+dsh plugin --profile web add github:ZG2017/dsh-plugin-insight-mode
 ```
 
 The plugin supplies its own persona (no persona text to copy or hand-assemble), but DSH still needs a concrete preset **directory** to select in the picker - presets are directory-discovered, not plugin-registered, so there's no code hook for a plugin to create one for you. This package ships a ready-to-use one (everything else Standard mode has - shell, fs, skills, planning, etc. - plus this plugin's own row, no separate persona row) - copy it into your preset root and restart:

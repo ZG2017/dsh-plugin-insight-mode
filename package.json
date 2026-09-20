@@ -11,10 +11,16 @@
   },
   "keywords": ["deepseek-harness", "dsh", "dsh-plugin", "research", "insight", "subagent", "master-worker"],
   "type": "module",
-  "main": "src/index.ts",
+  "main": "lib/index.js",
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./lib/index.js",
     "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node22 --packages=external --outfile=lib/index.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
