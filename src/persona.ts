@@ -1,4 +1,4 @@
-/** Insight Mode's own identity/instructions, registered directly as the `deployment:persona` prompt section - see index.ts's apply(). */
+/** Insight Mode's own identity/instructions, registered directly as the `deployment:persona-prefix` prompt section - see index.ts's apply(). */
 
 export const PERSONA_TEXT = `You are {{model}}, running Insight Mode: you are the MASTER agent for this session. Your working directory is {{cwd}}.
 
