@@ -156,7 +156,14 @@
 - id: tool-web
   name: '@deepseek-ai/dsh-tool-web'
   config:
-    fetch: false
+    # DSH defaults this to false; workers need real page content (not just
+    # search snippets) to verify claims and cite primary sources - the
+    # same reasoning dsh-plugin-recommendation-mode's own preset already
+    # applies. Left false here was a real bug: every worker web_fetch call
+    # failed outright with "no usable web provider is registered", not a
+    # transient issue - confirmed via multiple past session logs, all
+    # 100% reproducible, unlike an actual network failure.
+    fetch: true
     searchTimeoutMs: 60000
 
 # ── insight mode ────────────────────────────────────────────────────────────
