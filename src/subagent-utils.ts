@@ -10,9 +10,9 @@
  * since dispatch-worker.ts needs the structured outputSchema payload.
  */
 
-import type { SubagentResult, SubagentRun } from '@deepseek-ai/dsh-subagent'
+import type { SubagentActivation, SubagentResult } from '@deepseek-ai/dsh-subagent'
 
-export async function runSubagentAndDispose(run: SubagentRun): Promise<SubagentResult> {
+export async function runSubagentAndDispose(run: SubagentActivation): Promise<SubagentResult> {
   const [execution] = await Promise.allSettled([run.result])
   const [disposal] = await Promise.allSettled([Promise.resolve().then(() => run.dispose())])
   if (execution.status === 'rejected') {
@@ -34,7 +34,7 @@ export async function runSubagentAndDispose(run: SubagentRun): Promise<SubagentR
  * failure, anything) into a result the caller can turn into a normal FAILED
  * report instead of crashing the whole dispatch call.
  */
-export async function runSubagentResilient(run: SubagentRun): Promise<{ result: SubagentResult } | { error: string }> {
+export async function runSubagentResilient(run: SubagentActivation): Promise<{ result: SubagentResult } | { error: string }> {
   try {
     return { result: await runSubagentAndDispose(run) }
   } catch (error) {

@@ -128,22 +128,30 @@ export function installDispatchInsightWorker(ctx: Context, config: Config): void
       }
 
       const workerAgentOptions = resolveWorkerAgentOptions(ctx, config)
-      const run = await ctx.subagents.start('spawn', {
+      const activation = await ctx.subagents.startActivation({
+        provider: 'spawn',
         label: `insight_worker_${task.id}`,
-        prompt: [{ type: 'text', text: buildWorkerPrompt(task, args.guidance) }],
-        parent: agent,
         signal: exec.signal,
-        outputSchema: WORKER_RESULT_SCHEMA,
-        toolFilter: { allow: WORKER_ALLOWED_TOOLS },
-        persona: WORKER_PERSONA,
-        // Fixed cheap route, independent of whatever model the master is
-        // running on - see Config.workerModel's doc comment in index.ts.
-        // Omitted (falls back to the master's own model) when that route
-        // isn't available on this deployment - see resolveWorkerAgentOptions.
-        ...workerAgentOptions === undefined ? {} : { agentOptions: workerAgentOptions },
+        // Caller delivery: the result comes back here, no parent completion notice.
+        delivery: 'caller',
+        request: {
+          prompt: [{ type: 'text', text: buildWorkerPrompt(task, args.guidance) }],
+          parent: agent,
+          outputSchema: WORKER_RESULT_SCHEMA,
+          toolFilter: { allow: WORKER_ALLOWED_TOOLS },
+          persona: WORKER_PERSONA,
+          // Fixed cheap route, independent of whatever model the master is
+          // running on - see Config.workerModel's doc comment in index.ts.
+          // Omitted (falls back to the master's own model) when that route
+          // isn't available on this deployment - see resolveWorkerAgentOptions.
+          ...workerAgentOptions === undefined ? {} : { agentOptions: workerAgentOptions },
+        },
       })
+      // Grabbed while the child is live: the Session object keeps its log
+      // after the child leaves the session registry on settlement.
+      const childSession = ctx.get('sessions')?.get(activation.childId)
       recordRetry(agent.id, args.taskId)
-      const outcome = await runSubagentResilient(run)
+      const outcome = await runSubagentResilient(activation)
 
       if ('error' in outcome) {
         return {
@@ -158,7 +166,7 @@ export function installDispatchInsightWorker(ctx: Context, config: Config): void
 
       const { result } = outcome
       const costForSession = ctx.get('costForSession') as ((session: Session) => number | undefined) | undefined
-      const actualCostUsd = run.localAgent === undefined ? undefined : costForSession?.(run.localAgent.session)
+      const actualCostUsd = childSession === undefined ? undefined : costForSession?.(childSession)
 
       if (result.stopReason !== 'completed' || result.structured === undefined) {
         return {

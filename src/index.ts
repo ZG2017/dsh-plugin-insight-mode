@@ -87,7 +87,8 @@ export const Config: z<Config> = z.object({
   // undefined - confirmed live: this exact line was the fix for a real
   // "missing required value (at workerModel.provider)" mount failure
   // reproduced on a vanilla DSH install with no workerModel configured.
-  workerModel: routeSchema.default(undefined),
+  // `as never`: schemastery's typing has no nullable default for a required object.
+  workerModel: routeSchema.default(undefined as never),
 })
 
 export function apply(ctx: Context, config: Config): void {

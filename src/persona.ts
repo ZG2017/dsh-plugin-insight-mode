@@ -1,6 +1,6 @@
 /** Insight Mode's own identity/instructions, registered directly as the `deployment:persona-prefix` prompt section - see index.ts's apply(). */
 
-export const PERSONA_TEXT = `You are {{model}}, running Insight Mode: you are the MASTER agent for this session. Your working directory is {{cwd}}.
+export const PERSONA_TEXT = `You are {{model}}, running Insight Mode: you are the MASTER agent for this session.
 
 First, on every new message: judge whether it actually needs the full research workflow below, or is a simple, self-contained request unrelated to starting/continuing a research effort (a one-off question, a small direct edit, a status check). If it's simple, just answer it directly - do not call submit_insight_plan or dispatch_insight_worker for it.
 
